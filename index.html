@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jobbify — Apply Smarter, Not Harder</title>
+  <meta name="description" content="Jobbify helps Indian job seekers craft tailored resumes, LinkedIn DMs and cold emails for every job application using AI.">
+
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="wrap">
+
+    <!-- HEADER -->
+    <header>
+      <div>
+        <div class="logo"><em>Jobbify</em></div>
+        <div class="logo-sub">// apply smarter, not harder ⚡</div>
+      </div>
+      <div class="header-right">
+        <span class="lang-badge">⚡ Groq AI</span>
+        <span class="lang-badge">LinkedIn + Indeed</span>
+      </div>
+    </header>
+
+    <!-- PROGRESS -->
+    <div class="progress-rail">
+      <div class="prog-step active" id="pill-1" onclick="tryGoStep(1)">
+        <span class="prog-num">1</span>Resume
+      </div>
+      <div class="prog-step" id="pill-2" onclick="tryGoStep(2)">
+        <span class="prog-num">2</span>Jobs
+      </div>
+      <div class="prog-step" id="pill-3" onclick="tryGoStep(3)">
+        <span class="prog-num">3</span>Analyse
+      </div>
+      <div class="prog-step" id="pill-4" onclick="tryGoStep(4)">
+        <span class="prog-num">4</span>Results
+      </div>
+    </div>
+
+    <!-- ========== STEP 1: RESUME ========== -->
+    <div class="panel active" id="step-1">
+      <div class="panel-header">
+        <div class="panel-title">Apna Resume Upload Karo 📄</div>
+        <div class="panel-desc">PDF, Word doc ya directly paste karo — AI isko padhega aur har job ke liye use karega.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Resume Upload</div>
+
+        <div id="uploadZone" class="upload-zone">
+          <input type="file" id="resumeFile" accept=".pdf,.doc,.docx,.txt" onchange="handleFileUpload(event)" />
+          <div class="upload-icon">📂</div>
+          <div class="upload-main">Click karo ya file drag karo yahan</div>
+          <div class="upload-sub">Supported formats:</div>
+          <div class="upload-types">
+            <span class="upload-type-tag">PDF</span>
+            <span class="upload-type-tag">DOCX</span>
+            <span class="upload-type-tag">DOC</span>
+            <span class="upload-type-tag">TXT</span>
+          </div>
+        </div>
+
+        <div id="fileLoaded" style="display:none;"></div>
+
+        <div class="divider-text">ya text paste karo</div>
+
+        <div class="form-row">
+          <label>Resume Text (manually paste karo)</label>
+          <textarea id="resumeText" placeholder="Apna poora resume yahan paste karo...
+
+Example:
+Rahul Sharma | rahul@email.com | +91-9876543210
+LinkedIn: linkedin.com/in/rahulsharma
+
+SUMMARY
+3 years ka experience React aur Node.js mein...
+
+EXPERIENCE
+Software Developer @ TCS (2022–Present)
+• Built RESTful APIs used by 50,000+ users
+..." oninput="onResumeTextInput()"></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Aapke Baare Mein</div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Aapka Naam *</label>
+            <input type="text" id="userName" placeholder="e.g. Rahul Sharma" />
+          </div>
+          <div class="form-row">
+            <label>Aapka Role / Field *</label>
+            <input type="text" id="userRole" placeholder="e.g. Full Stack Developer" />
+          </div>
+          <div class="form-row">
+            <label>Email Address</label>
+            <input type="text" id="userEmail" placeholder="rahul@email.com" />
+          </div>
+          <div class="form-row">
+            <label>City / Location</label>
+            <input type="text" id="userCity" placeholder="e.g. Bengaluru, Delhi, Mumbai" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Preferred Job Title (kya dhundh rahe ho?)</label>
+          <input type="text" id="userTarget" placeholder="e.g. Senior React Developer, Data Scientist, Product Manager..." />
+        </div>
+        <div class="form-row">
+          <label>Experience Level</label>
+          <select id="userExp">
+            <option value="fresher">Fresher (0–1 year)</option>
+            <option value="junior" selected>Junior (1–3 years)</option>
+            <option value="mid">Mid-level (3–6 years)</option>
+            <option value="senior">Senior (6+ years)</option>
+            <option value="lead">Lead / Manager</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="step1Next()">Aage Badho — Jobs Add Karo →</button>
+      </div>
+    </div>
+
+    <!-- ========== STEP 2: JOBS ========== -->
+    <div class="panel" id="step-2">
+      <div class="panel-header">
+        <div class="panel-title">Job Descriptions Daalo 🔍</div>
+        <div class="panel-desc">LinkedIn ya Indeed se job descriptions copy karo aur paste karo. Jitni chahiye utni add karo.</div>
+      </div>
+
+      <div class="alert alert-info">
+        💡 <div><strong>Tip:</strong> Job listing kholo → saari description copy karo → yahan paste karo. Hiring manager ka naam LinkedIn se dhundo to outreach aur bhi powerful hoga!</div>
+      </div>
+
+      <div id="jobsAdded"></div>
+
+      <div class="card" id="addJobCard">
+        <div class="card-title">Nayi Job Add Karo</div>
+
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Job Title *</label>
+            <input type="text" id="jTitle" placeholder="e.g. Senior React Developer" />
+          </div>
+          <div class="form-row">
+            <label>Company Name *</label>
+            <input type="text" id="jCompany" placeholder="e.g. Razorpay, Flipkart, Infosys" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Platform</label>
+          <div class="platform-select">
+            <label class="platform-pill checked" id="pp-linkedin">
+              <input type="radio" name="platform" value="LinkedIn" checked onchange="selectPlatform(this)">
+              <span class="picon">💼</span> LinkedIn
+            </label>
+            <label class="platform-pill" id="pp-indeed">
+              <input type="radio" name="platform" value="Indeed" onchange="selectPlatform(this)">
+              <span class="picon">🔎</span> Indeed
+            </label>
+            <label class="platform-pill" id="pp-other">
+              <input type="radio" name="platform" value="Other" onchange="selectPlatform(this)">
+              <span class="picon">🌐</span> Other
+            </label>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Hiring Manager / Recruiter Name (LinkedIn se milegi)</label>
+            <input type="text" id="jHM" placeholder="e.g. Priya Sharma" />
+          </div>
+          <div class="form-row">
+            <label>Recruiter Email (agar pata ho)</label>
+            <input type="text" id="jEmail" placeholder="priya.sharma@razorpay.com" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Job Description — Poori JD Paste Karo *</label>
+          <textarea id="jJD" style="min-height:180px;" placeholder="LinkedIn ya Indeed se puri job description copy karke yahan paste karo...
+
+Responsibilities:
+- ...
+Requirements:
+- ...
+Skills:
+- ..."></textarea>
+        </div>
+
+        <button class="btn btn-outline" onclick="addJob()" style="margin-top:4px;">+ Is Job Ko Add Karo</button>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="goStep(1)">← Wapas</button>
+        <button class="btn btn-primary" onclick="step2Next()">AI Se Analyse Karo →</button>
+      </div>
+    </div>
+
+    <!-- ========== STEP 3: ANALYZING ========== -->
+    <div class="panel" id="step-3">
+      <div class="analysis-wrap">
+        <div class="big-spinner" id="mainSpinner"></div>
+        <div class="analysis-title" id="analysisTitle">AI Kaam Kar Raha Hai...</div>
+        <div class="analysis-step" id="analysisStep">Shuru ho raha hai...</div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+          </div>
+          <div class="progress-text" id="progressText">0 / 0 jobs processed</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== STEP 4: RESULTS ========== -->
+    <div class="panel" id="step-4">
+      <div class="panel-header">
+        <div class="panel-title">Aapke Results Taiyaar Hain ✅</div>
+        <div class="panel-desc">Har job ke liye tailored resume content + LinkedIn DM + Cold Email — best match pehle.</div>
+      </div>
+      <div id="resultsContainer"></div>
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="goStep(2)">← Aur Jobs Add Karo</button>
+        <button class="btn btn-primary" onclick="resetAll()">Naya Session Shuru Karo</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- App Logic -->
+  <script src="app.js"></script>
+</body>
+
+</html>
