@@ -4,8 +4,8 @@ let jobs = [];
 let results = [];
 let currentPlatform = 'LinkedIn';
 
-// ── GROQ API KEY (internal — not shown to user) ──
-const GROQ_API_KEY = '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';
+// ── GROQ API KEY — loaded from config.js (gitignored, never in source control) ──
+const GROQ_API_KEY = (typeof CONFIG !== 'undefined' && CONFIG.GROQ_API_KEY) ? CONFIG.GROQ_API_KEY : '';
 
 // ── DRAG & DROP ──
 const uz = document.getElementById('uploadZone');

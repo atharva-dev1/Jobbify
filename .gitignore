@@ -1,0 +1,8 @@
+# ── Secret / Local Config ──
+# Contains real API keys — NEVER commit this
+config.js
+
+# Node / OS artifacts
+node_modules/
+.DS_Store
+Thumbs.db
